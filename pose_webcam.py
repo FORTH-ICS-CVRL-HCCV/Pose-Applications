@@ -20,7 +20,7 @@ if (videoWidth):
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
 mp_drawing_styles = mp.solutions.drawing_styles
-pose_detector = mp_pose.Pose(static_image_mode=False, model_complexity=2, enable_segmentation=True, min_detection_confidence=0.5)
+pose_detector = mp_pose.Pose(static_image_mode=False, model_complexity=1, enable_segmentation=True, min_detection_confidence=0.5)
 while cap.isOpened():
     ret, frame = cap.read()
     if not ret:

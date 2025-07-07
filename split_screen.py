@@ -49,6 +49,8 @@ while cap.isOpened():
     seconds    = time.time() - start
     hz    = 1 / (seconds+0.0001)
     
+    
+
     if results1.pose_landmarks:
         mp_drawing.draw_landmarks(image1, results1.pose_landmarks, mp_pose.POSE_CONNECTIONS)
 

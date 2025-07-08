@@ -40,7 +40,7 @@ while cap.isOpened():
 
 
 
-    start      = time.time()
+    start = time.time()
 
 
     results = pose_detector.process(image)
@@ -51,14 +51,27 @@ while cap.isOpened():
 
     h, w = frame.shape[:2]
 
-    for()
+    orig = frame.copy()
+
+    # draw black rectangle
+    cv2.rectangle(frame, (int(right_shoulder[0]), 0), (int(left_shoulder[0]), h), (0,0,0), thickness=-1)
+
+    # …do whatever processing you need on the modified frame…
+    image2 = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    results2 = pose_detector.process(image2)
+
+    # restore original
+    frame[:] = orig
 
     seconds    = time.time() - start
     hz    = 1 / (seconds+0.0001)
     
-
+    image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     if results.pose_landmarks:
         mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
+
+    if results2.pose_landmarks:
+        mp_drawing.draw_landmarks(image, results2.pose_landmarks, mp_pose.POSE_CONNECTIONS)
 
 
 

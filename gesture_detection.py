@@ -35,7 +35,10 @@ while cap.isOpened():
     seconds    = time.time() - start
     hz    = 1 / (seconds+0.0001)
     
+    
     if results.multi_hand_landmarks:
+        size = len(results.multi_hand_landmarks)
+        count = 0
         for hands in results.multi_hand_landmarks:     
             mp_drawing.draw_landmarks(image, hands, mp_hands.HAND_CONNECTIONS)
             
@@ -51,6 +54,22 @@ while cap.isOpened():
                 cv2.putText(image, str(idx), (x, y),  cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1)
                 #if idx == 0:
                     #cv2.circle(image, (x, y), 20, (0, 0, 0), cv2.FILLED)
+
+            
+            landmarks_normalized = np.array([[landmark.x, landmark.y] for landmark in hands.landmark])
+            index_finger_tip = landmarks_normalized[mp_hands.HandLandmark.INDEX_FINGER_TIP.value]
+            thumb_tip = landmarks_normalized[mp_hands.HandLandmark.THUMB_TIP.value]
+            distance = np.linalg.norm(index_finger_tip - thumb_tip)
+            
+            if size == 1:
+                cv2.putText(image, "Distance: %0.2f" % distance, (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
+            elif size == 2:
+                if count == 0:
+                    cv2.putText(image, "Distance: %0.2f" % distance, (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
+                    count += 1
+                elif count == 1:
+                    cv2.putText(image, "Distance: %0.2f" % distance, (8,100),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
+                    count -= 1
     
     cv2.putText(image, "Framerate: %0.2f Hz" % hz, (8,40),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
     cv2.imshow('Hands Detection', cv2.cvtColor(image, cv2.COLOR_RGB2BGR))

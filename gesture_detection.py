@@ -60,15 +60,28 @@ while cap.isOpened():
             index_finger_tip = landmarks_normalized[mp_hands.HandLandmark.INDEX_FINGER_TIP.value]
             thumb_tip = landmarks_normalized[mp_hands.HandLandmark.THUMB_TIP.value]
             distance = np.linalg.norm(index_finger_tip - thumb_tip)
+
+            rel1 = landmarks_normalized[mp_hands.HandLandmark.WRIST.value]
+            rel2 = landmarks_normalized[mp_hands.HandLandmark.INDEX_FINGER_MCP.value]
+            rel_distance = np.linalg.norm(rel1 - rel2)
             
             if size == 1:
-                cv2.putText(image, "Distance: %0.2f" % distance, (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
+                if distance < (rel_distance/3):
+                    cv2.putText(image, "Pinching hand 1", (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
+                else:
+                    cv2.putText(image, "Not Pinching hand 1", (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
             elif size == 2:
                 if count == 0:
-                    cv2.putText(image, "Distance: %0.2f" % distance, (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
+                    if distance < (rel_distance/3):
+                        cv2.putText(image, "Pinching hand 1", (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
+                    else:
+                        cv2.putText(image, "Not Pinching hand 1", (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
                     count += 1
                 elif count == 1:
-                    cv2.putText(image, "Distance: %0.2f" % distance, (8,100),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
+                    if distance < (rel_distance/3):
+                        cv2.putText(image, "Pinching hand 2", (8,100),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
+                    else:
+                        cv2.putText(image, "Not Pinching hand 2", (8,100),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
                     count -= 1
     
     cv2.putText(image, "Framerate: %0.2f Hz" % hz, (8,40),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)

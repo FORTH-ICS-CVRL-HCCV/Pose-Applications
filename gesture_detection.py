@@ -35,7 +35,6 @@ while cap.isOpened():
     seconds    = time.time() - start
     hz    = 1 / (seconds+0.0001)
     
-    
     if results.multi_hand_landmarks:
         size = len(results.multi_hand_landmarks)
         count = 0

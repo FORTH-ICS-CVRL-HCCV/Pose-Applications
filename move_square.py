@@ -73,10 +73,10 @@ while cap.isOpened():
             rel_distance = np.linalg.norm(rel1 - rel2)
             
             if size == 1:
-                if distance < (rel_distance/3):
+                if distance < (rel_distance/4):
                     cv2.putText(image, "Pinching hand 1", (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
-                    if (int(index_finger_tip[0] * img_w) > square_x and int(index_finger_tip[0] * img_w) < square_x + square_size):
-                        if (int(index_finger_tip[1] * img_h) > square_y and int(index_finger_tip[1] * img_h) < square_y + square_size):
+                    if (int(index_finger_tip[0] * img_w) > square_x - 10 and int(index_finger_tip[0] * img_w) < square_x + square_size + 10):
+                        if (int(index_finger_tip[1] * img_h) > square_y - 10 and int(index_finger_tip[1] * img_h) < square_y + square_size + 10):
                             if edit == False:
                                 dis_x = np.abs(square_x - int(index_finger_tip[0] * img_w))
                                 dis_y = np.abs(square_y - int(index_finger_tip[1] * img_h))
@@ -99,10 +99,10 @@ while cap.isOpened():
                     cv2.putText(image, "Not Pinching hand 1", (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
             elif size == 2:
                 if count == 0:
-                    if distance < (rel_distance/3):
+                    if distance < (rel_distance/4):
                         cv2.putText(image, "Pinching hand 1", (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
-                        if (int(index_finger_tip[0] * img_w) > square_x and int(index_finger_tip[0] * img_w) < square_x + square_size):
-                            if (int(index_finger_tip[1] * img_h) > square_y and int(index_finger_tip[1] * img_h) < square_y + square_size):
+                        if (int(index_finger_tip[0] * img_w) > square_x - 10 and int(index_finger_tip[0] * img_w) < square_x + square_size + 10):
+                            if (int(index_finger_tip[1] * img_h) > square_y - 10 and int(index_finger_tip[1] * img_h) < square_y + square_size + 10):
                                 if edit == False:
                                     dis_x = int(np.abs(square_x - index_finger_tip[0] * img_w))
                                     dis_y = int(np.abs(square_y - index_finger_tip[1] * img_h))
@@ -125,10 +125,10 @@ while cap.isOpened():
                         cv2.putText(image, "Not Pinching hand 1", (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
                     count += 1
                 elif count == 1:
-                    if distance < (rel_distance/3):
+                    if distance < (rel_distance/4):
                         cv2.putText(image, "Pinching hand 2", (8,100),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
-                        if (int(index_finger_tip[0] * img_w) > square_x and int(index_finger_tip[0] * img_w) < square_x + square_size):
-                            if (int(index_finger_tip[1] * img_h) > square_y and int(index_finger_tip[1] * img_h) < square_y + square_size):
+                        if (int(index_finger_tip[0] * img_w) > square_x - 10 and int(index_finger_tip[0] * img_w) < square_x + square_size + 10):
+                            if (int(index_finger_tip[1] * img_h) > square_y - 10 and int(index_finger_tip[1] * img_h) < square_y + square_size + 10):
                                 if edit == False:
                                     dis_x = int(np.abs(square_x - (index_finger_tip[0] * img_w)))
                                     dis_y = int(np.abs(square_y - (index_finger_tip[1] * img_h)))

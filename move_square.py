@@ -40,8 +40,7 @@ while cap.isOpened():
 
     start      = time.time()
     results = hands_detector.process(image)
-    seconds    = time.time() - start
-    hz    = 1 / (seconds+0.0001)
+    
     
     if results.multi_hand_landmarks:
         size = len(results.multi_hand_landmarks)
@@ -150,7 +149,8 @@ while cap.isOpened():
                     else:
                         cv2.putText(image, "Not Pinching hand 2", (8,100),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
                     count -= 1
-    
+    seconds    = time.time() - start
+    hz    = 1 / (seconds+0.0001)
     cv2.putText(image, "Framerate: %0.2f Hz" % hz, (8,40),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
     cv2.rectangle(image, (square_x, square_y), (square_x + square_size, square_y + square_size), (0, 255, 0), -1)
     cv2.imshow('Hands Detection', cv2.cvtColor(image, cv2.COLOR_RGB2BGR))

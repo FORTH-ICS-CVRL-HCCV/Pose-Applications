@@ -115,7 +115,6 @@ def DetectTouch(index_finger_tip, rect, img_h, img_w):
 
 def main():
     clock = Clock()
-    clock.start_clock()
     cap = CameraSet()
 
     rect = Rectangle(100, 100, 100)
@@ -126,6 +125,7 @@ def main():
     hands_detector = mp_hands.Hands(static_image_mode=False, max_num_hands = 2, model_complexity=1, min_detection_confidence=0.5)
 
     while cap.isOpened():
+        clock.start_clock()
         ret, frame = cap.read()
         if not ret:
             print("Failed to capture video")

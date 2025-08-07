@@ -52,7 +52,6 @@ while cap.isOpened():
             img_h, img_w, _ = image.shape
     
 
-            #Printing the coordinates of the landmarks and the name of the landmarks
             for idx, landmark in enumerate(hands.landmark):
                 x = int(landmark.x * img_w)
                 y = int(landmark.y * img_h)

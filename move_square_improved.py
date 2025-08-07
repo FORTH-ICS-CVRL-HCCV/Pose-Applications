@@ -30,6 +30,9 @@ class Rectangle:
         self.size = size
         self.edit = False
 
+        self.dis_x = 0
+        self.dis_y = 0
+
     def Get_X(self):
         return self.x
 
@@ -52,7 +55,7 @@ class Rectangle:
         self.size = new_size
 
     def Set_Edit(self, new_edit):
-        self.size = new_edit
+        self.edit = new_edit
 
     def Move(self, index_finger_tip, img_w, img_h):
         finger_x = int(index_finger_tip[0] * img_w)
@@ -60,21 +63,18 @@ class Rectangle:
 
 
         if self.edit == False:
-            dis_x = np.abs(self.x - finger_x)
-            dis_y = np.abs(self.y - finger_y)
+            self.dis_x = np.abs(self.x - finger_x)
+            self.dis_y = np.abs(self.y - finger_y)
             self.edit = True
-            if(self.x > finger_x):
-                self.x = finger_x + dis_x
-            else:
-                self.x = finger_x - dis_x
+        if(self.x > finger_x):
+            self.x = finger_x + self.dis_x
+        else:
+            self.x = finger_x - self.dis_x
 
-            if(self.y > finger_y):
-                self.y = finger_y + dis_y
-            else:
-                self.y = finger_y - dis_y
-            
-            return True
-        return False
+        if(self.y > finger_y):
+            self.y = finger_y + self.dis_y
+        else:
+            self.y = finger_y - self.dis_y
 
 
 
@@ -108,7 +108,7 @@ def DetectTouch(index_finger_tip, rect, img_h, img_w):
     finger_y = int(index_finger_tip[1] * img_h)
 
     if (finger_x > rect.Get_X() - buffer and finger_x < rect.Get_X() + rect.Get_Size() + buffer):
-        if (finger_y > rect.Get_X() - buffer and finger_y < rect.Get_Y() + rect.Get_Size() + buffer):
+        if (finger_y > rect.Get_Y() - buffer and finger_y < rect.Get_Y() + rect.Get_Size() + buffer):
             return True
     
     return False
@@ -162,10 +162,9 @@ def main():
                     if distance < (rel_distance/4):
                         cv2.putText(image, "Pinching hand 1", (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
                         if (DetectTouch(index_finger_tip, rect, img_h, img_w)):
-                            result = rect.Move(index_finger_tip, img_w, img_h)
+                            rect.Move(index_finger_tip, img_w, img_h)
                             
-                            if(result == True):
-                                break
+                            break
 
                         else:
                             rect.Set_Edit(False)
@@ -176,26 +175,22 @@ def main():
                         if distance < (rel_distance/4):
                             cv2.putText(image, "Pinching hand 1", (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
                             if (DetectTouch(index_finger_tip, rect, img_h, img_w)):
-                                result = rect.Move(index_finger_tip, img_w, img_h)
+                                rect.Move(index_finger_tip, img_w, img_h)
                             
-                                if(result == True):
-                                    break
+                                break
 
                             else:
                                 rect.Set_Edit(False)
                         else:
-                            cv2.putText(image, "Not Pinching hand 1", (8,100),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
+                            cv2.putText(image, "Not Pinching hand 1", (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
 
                         count += 1
                     elif count == 1: 
                         if distance < (rel_distance/4):
-                            cv2.putText(image, "Pinching hand 2", (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
+                            cv2.putText(image, "Pinching hand 2", (8,100),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
                             if (DetectTouch(index_finger_tip, rect, img_h, img_w)):
-                                result = rect.Move(index_finger_tip, img_w, img_h)
-                            
-                                if(result == True):
-                                    break
-
+                                rect.Move(index_finger_tip, img_w, img_h)
+                                break
                             else:
                                 rect.Set_Edit(False)
                         else:

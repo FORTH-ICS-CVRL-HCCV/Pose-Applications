@@ -29,6 +29,7 @@ class Rectangle:
         self.y = y
         self.size = size
         self.edit = False
+        self.type = "rectangle"
 
         self.dis_x = 0
         self.dis_y = 0
@@ -47,6 +48,9 @@ class Rectangle:
 
     def Set_X(self, new_x):
         self.x = new_x
+
+    def Get_Type(self):
+        return self.type
 
     def Set_Y(self, new_y):
         self.y = new_y
@@ -119,6 +123,12 @@ def main():
 
     rect = Rectangle(100, 100, 100)
 
+    rectangles = []
+
+    rectangles.append(rect)
+    last_pinched_type = ""
+    last_pinched_index = 0
+
     mp_drawing = mp.solutions.drawing_utils
     mp_hands = mp.solutions.hands
     mp_drawing_styles = mp.solutions.drawing_styles
@@ -161,26 +171,32 @@ def main():
                 if(size == 1):
                     if distance < (rel_distance/4):
                         cv2.putText(image, "Pinching hand 1", (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
-                        if (DetectTouch(index_finger_tip, rect, img_h, img_w)):
-                            rect.Move(index_finger_tip, img_w, img_h)
-                            
-                            break
+                        for i in range(0, len(rectangles)): 
+                            if (DetectTouch(index_finger_tip, rectangles[i], img_h, img_w)):
+                                rect.Move(index_finger_tip, img_w, img_h)
+                                last_pinched_type = rectangles[i].Get_Type()
+                                last_pinched_index = i
+                                
+                                break
 
-                        else:
-                            rect.Set_Edit(False)
+                            else:
+                                rectangles[i].Set_Edit(False)
                     else:
                         cv2.putText(image, "Not Pinching hand 1", (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
                 elif(size == 2):
                     if count == 0:
                         if distance < (rel_distance/4):
                             cv2.putText(image, "Pinching hand 1", (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
-                            if (DetectTouch(index_finger_tip, rect, img_h, img_w)):
-                                rect.Move(index_finger_tip, img_w, img_h)
-                            
-                                break
+                            for i in range(0, len(rectangles)):
+                                if (DetectTouch(index_finger_tip, rectangles[i], img_h, img_w)):
+                                    rect.Move(index_finger_tip, img_w, img_h)
+                                    last_pinched_type = rectangles[i].Get_Type()
+                                    last_pinched_index = i
+                        
+                                    break
 
-                            else:
-                                rect.Set_Edit(False)
+                                else:
+                                    rectangles[i].Set_Edit(False)
                         else:
                             cv2.putText(image, "Not Pinching hand 1", (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
 
@@ -188,11 +204,16 @@ def main():
                     elif count == 1: 
                         if distance < (rel_distance/4):
                             cv2.putText(image, "Pinching hand 2", (8,100),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
-                            if (DetectTouch(index_finger_tip, rect, img_h, img_w)):
-                                rect.Move(index_finger_tip, img_w, img_h)
-                                break
-                            else:
-                                rect.Set_Edit(False)
+                            for i in range(0, len(rectangles)):
+                                if (DetectTouch(index_finger_tip, rectangles[i], img_h, img_w)):
+                                    rect.Move(index_finger_tip, img_w, img_h)
+                                    last_pinched_type = rectangles[i].Get_Type()
+                                    last_pinched_index = i
+                        
+                                    break
+
+                                else:
+                                    rectangles[i].Set_Edit(False)
                         else:
                             cv2.putText(image, "Not Pinching hand 2", (8,100),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
 

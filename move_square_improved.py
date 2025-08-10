@@ -46,11 +46,11 @@ class Rectangle:
     def Get_Edit(self):
         return self.edit
 
-    def Set_X(self, new_x):
-        self.x = new_x
-
     def Get_Type(self):
         return self.type
+
+    def Set_X(self, new_x):
+        self.x = new_x
 
     def Set_Y(self, new_y):
         self.y = new_y
@@ -80,6 +80,63 @@ class Rectangle:
         else:
             self.y = finger_y - self.dis_y
 
+class Circle:
+    def __init__(self, center_x, center_y, radius):
+        self.center_x = center_x
+        self.center_y = center_y
+        self.radius = radius
+        self.edit = False
+        self.type = "circle"
+
+        self.dis_x = 0
+        self.dis_y = 0
+
+    def Get_Center_X(self):
+        return self.center_x
+
+    def Get_Center_Y(self):
+        return self.center_y
+
+    def Get_Radius(self):
+        return self.radius
+
+    def Get_Edit(self):
+        return self.edit
+
+    def Get_Type(self):
+        return self.type
+
+    def Set_Center_X(self, center_x):
+        self.center_x = center_x
+
+    def Set_Center_Y(self, center_y):
+        self.center_y = center_y    
+
+    def Set_Radius(self, new_radius):
+        self.radius = new_radius
+
+    def Set_Edit(self, new_edit):
+        self.edit = new_edit
+
+    def Move(self, index_finger_tip, img_w, img_h):
+        finger_x = int(index_finger_tip[0] * img_w)
+        finger_y = int(index_finger_tip[1] * img_h)
+
+
+        if self.edit == False:
+            self.dis_x = np.abs(self.center_x - finger_x)
+            self.dis_y = np.abs(self.center_y - finger_y)
+            self.edit = True
+        if(self.center_x > finger_x):
+            self.center_x = finger_x + self.dis_x
+        else:
+            self.center_x = finger_x - self.dis_x
+
+        if(self.center_y > finger_y):
+            self.center_y = finger_y + self.dis_y
+        else:
+            self.center_y = finger_y - self.dis_y
+
 
 
 
@@ -106,7 +163,7 @@ def CalculateRelativeDistance(landmarks_normalized, mp_hands):
     rel_distance = np.linalg.norm(rel1 - rel2)
     return rel_distance
 
-def DetectTouch(index_finger_tip, rect, img_h, img_w):
+def DetectRectTouch(index_finger_tip, rect, img_h, img_w):
     buffer = 10
     finger_x = int(index_finger_tip[0] * img_w)
     finger_y = int(index_finger_tip[1] * img_h)
@@ -117,17 +174,35 @@ def DetectTouch(index_finger_tip, rect, img_h, img_w):
     
     return False
 
+def DetectCircleTouch(index_finger_tip, circle, img_h, img_w):
+    buffer = 10
+    finger_x = int(index_finger_tip[0] * img_w)
+    finger_y = int(index_finger_tip[1] * img_h)
+
+    distance = np.sqrt((finger_x - circle.Get_Center_X())**2 + (finger_y - circle.Get_Center_Y())**2)
+    if (distance < circle.Get_Radius() + buffer):
+        return True
+    
+    return False
+
 def main():
     clock = Clock()
     cap = CameraSet()
 
     rect = Rectangle(100, 100, 100)
+    circ = Circle(300, 300, 50)
 
     rectangles = []
+    circles = []
 
-    rectangles.append(rect)
     last_pinched_type = ""
     last_pinched_index = 0
+
+    rectangles.append(rect)
+    circles.append(circ)
+    
+
+     
 
     mp_drawing = mp.solutions.drawing_utils
     mp_hands = mp.solutions.hands
@@ -172,8 +247,8 @@ def main():
                     if distance < (rel_distance/4):
                         cv2.putText(image, "Pinching hand 1", (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
                         for i in range(0, len(rectangles)): 
-                            if (DetectTouch(index_finger_tip, rectangles[i], img_h, img_w)):
-                                rect.Move(index_finger_tip, img_w, img_h)
+                            if (DetectRectTouch(index_finger_tip, rectangles[i], img_h, img_w)):
+                                rectangles[i].Move(index_finger_tip, img_w, img_h)
                                 last_pinched_type = rectangles[i].Get_Type()
                                 last_pinched_index = i
                                 
@@ -181,6 +256,16 @@ def main():
 
                             else:
                                 rectangles[i].Set_Edit(False)
+                        for i in range(0, len(circles)): 
+                            if (DetectCircleTouch(index_finger_tip, circles[i], img_h, img_w)):
+                                circles[i].Move(index_finger_tip, img_w, img_h)
+                                last_pinched_type = circles[i].Get_Type()
+                                last_pinched_index = i
+                                
+                                break
+
+                            else:
+                                circles[i].Set_Edit(False)
                     else:
                         cv2.putText(image, "Not Pinching hand 1", (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
                 elif(size == 2):
@@ -188,8 +273,8 @@ def main():
                         if distance < (rel_distance/4):
                             cv2.putText(image, "Pinching hand 1", (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
                             for i in range(0, len(rectangles)):
-                                if (DetectTouch(index_finger_tip, rectangles[i], img_h, img_w)):
-                                    rect.Move(index_finger_tip, img_w, img_h)
+                                if (DetectRectTouch(index_finger_tip, rectangles[i], img_h, img_w)):
+                                    rectangles[i].Move(index_finger_tip, img_w, img_h)
                                     last_pinched_type = rectangles[i].Get_Type()
                                     last_pinched_index = i
                         
@@ -197,6 +282,16 @@ def main():
 
                                 else:
                                     rectangles[i].Set_Edit(False)
+                            for i in range(0, len(circles)): 
+                                if (DetectCircleTouch(index_finger_tip, circles[i], img_h, img_w)):
+                                    circles[i].Move(index_finger_tip, img_w, img_h)
+                                    last_pinched_type = circles[i].Get_Type()
+                                    last_pinched_index = i
+                                    
+                                    break
+
+                                else:
+                                    circles[i].Set_Edit(False)
                         else:
                             cv2.putText(image, "Not Pinching hand 1", (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
 
@@ -205,8 +300,8 @@ def main():
                         if distance < (rel_distance/4):
                             cv2.putText(image, "Pinching hand 2", (8,100),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
                             for i in range(0, len(rectangles)):
-                                if (DetectTouch(index_finger_tip, rectangles[i], img_h, img_w)):
-                                    rect.Move(index_finger_tip, img_w, img_h)
+                                if (DetectRectTouch(index_finger_tip, rectangles[i], img_h, img_w)):
+                                    rectangles[i].Move(index_finger_tip, img_w, img_h)
                                     last_pinched_type = rectangles[i].Get_Type()
                                     last_pinched_index = i
                         
@@ -214,6 +309,16 @@ def main():
 
                                 else:
                                     rectangles[i].Set_Edit(False)
+                            for i in range(0, len(circles)): 
+                                if (DetectCircleTouch(index_finger_tip, circles[i], img_h, img_w)):
+                                    circles[i].Move(index_finger_tip, img_w, img_h)
+                                    last_pinched_type = circles[i].Get_Type()
+                                    last_pinched_index = i
+                                    
+                                    break
+
+                                else:
+                                    circles[i].Set_Edit(False)
                         else:
                             cv2.putText(image, "Not Pinching hand 2", (8,100),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
 
@@ -221,7 +326,11 @@ def main():
         clock.end_clock()
         hz = clock.result()
         cv2.putText(image, "Framerate: %0.2f Hz" % hz, (8,40),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
-        cv2.rectangle(image, (rect.Get_X(), rect.Get_Y()), (rect.Get_X() + rect.Get_Size(), rect.Get_Y() + rect.Get_Size()), (0, 255, 0), -1)
+        for shape in rectangles:
+            cv2.rectangle(image, (shape.Get_X(), shape.Get_Y()), (shape.Get_X() + shape.Get_Size(), shape.Get_Y() + shape.Get_Size()), (0, 255, 0), -1)
+
+        for shape in circles:
+            cv2.circle(image, (shape.Get_Center_X(), shape.Get_Center_Y()), shape.Get_Radius(), (0, 255, 0), -1)
         cv2.imshow('Hands Detection', cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
         #Press 'q' to exit
         if cv2.waitKey(1) & 0xFF == ord('q'):

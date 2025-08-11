@@ -185,6 +185,19 @@ def DetectCircleTouch(index_finger_tip, circle, img_h, img_w):
     
     return False
 
+def DeleteObject(arr, obj, index):
+    arr.pop(index)
+    del obj
+
+def CreateObject(arr, type, x, y, size):
+    if type == "rect":
+        r = Rectangle(x, y, size)
+        arr.append(r)
+
+    elif type == "circle":
+        c = Circle(x, y, size)
+        arr.append(c)
+
 def main():
     clock = Clock()
     cap = CameraSet()
@@ -326,12 +339,14 @@ def main():
         clock.end_clock()
         hz = clock.result()
         cv2.putText(image, "Framerate: %0.2f Hz" % hz, (8,40),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
+        cv2.putText(image, "Selected: " + last_pinched_type, (8, 120), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0,0,0), 1)
         for shape in rectangles:
             cv2.rectangle(image, (shape.Get_X(), shape.Get_Y()), (shape.Get_X() + shape.Get_Size(), shape.Get_Y() + shape.Get_Size()), (0, 255, 0), -1)
 
         for shape in circles:
             cv2.circle(image, (shape.Get_Center_X(), shape.Get_Center_Y()), shape.Get_Radius(), (0, 255, 0), -1)
-        cv2.imshow('Hands Detection', cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
+        cv2.imshow("Hands Detection", cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
+
         #Press 'q' to exit
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break                

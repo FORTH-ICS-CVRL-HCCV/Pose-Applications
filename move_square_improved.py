@@ -142,8 +142,13 @@ class Circle:
 
 def CameraSet():
     #Run from webcam
-    videoWidth=None # Or 640 
-    videoHeight=None  # Or 480
+    videoWidth=1920 # Or 640 
+    videoHeight=1080  # Or 480
+
+    cv2.namedWindow("Hands Detection", cv2.WND_PROP_FULLSCREEN)
+
+    cv2.setWindowProperty("Hands Detection", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+
 
     cap = cv2.VideoCapture(0)  # Change to filename for video input
     if (videoHeight): 
@@ -164,7 +169,7 @@ def CalculateRelativeDistance(landmarks_normalized, mp_hands):
     return rel_distance
 
 def DetectRectTouch(index_finger_tip, rect, img_h, img_w):
-    buffer = 10
+    buffer = 50
     finger_x = int(index_finger_tip[0] * img_w)
     finger_y = int(index_finger_tip[1] * img_h)
 
@@ -175,7 +180,7 @@ def DetectRectTouch(index_finger_tip, rect, img_h, img_w):
     return False
 
 def DetectCircleTouch(index_finger_tip, circle, img_h, img_w):
-    buffer = 10
+    buffer = 50
     finger_x = int(index_finger_tip[0] * img_w)
     finger_y = int(index_finger_tip[1] * img_h)
 

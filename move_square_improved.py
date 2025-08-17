@@ -80,6 +80,9 @@ class Rectangle:
         else:
             self.y = finger_y - self.dis_y
 
+    def Draw(self, image):
+        cv2.rectangle(image, (self.x, self.y), (self.x + self.size, self.y + self.size), (0, 255, 0), -1)
+
 class Circle:
     def __init__(self, center_x, center_y, radius):
         self.center_x = center_x
@@ -137,6 +140,9 @@ class Circle:
         else:
             self.center_y = finger_y - self.dis_y
 
+    def Draw(self, image):
+        cv2.circle(image, (self.center_x, self.center_y), self.radius, (0, 255, 0), -1)
+
 class Button:
     def __init__(self, x, y, color, size, text):
         self.x = x
@@ -168,6 +174,10 @@ class Button:
 
     def Set_Text(self, text):
         self.text = text
+
+    def Draw(self, image):
+        cv2.rectangle(image, (self.x, self.y), (self.x + self.size, self.y + self.size), self.color, -1)
+        cv2.putText(image, self.text, (self.x, self.y + self.size//2),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
 
 
 
@@ -252,15 +262,20 @@ def main():
 
     rect = Rectangle(100, 100, 100)
     circ = Circle(300, 300, 50)
+    but1 = Button(50, 50, (0, 255, 0), 100, "Add")
+    but2 = Button(200, 50, (255, 0, 0), 100, "Delete")
 
     rectangles = []
     circles = []
+    buttons = []
 
     last_pinched_type = ""
     last_pinched_index = 0
 
     rectangles.append(rect)
     circles.append(circ)
+    buttons.append(but1)
+    buttons.append(but2)
     
 
      
@@ -327,8 +342,18 @@ def main():
 
                             else:
                                 circles[i].Set_Edit(False)
+                        for i in range(0, len(buttons)): 
+                            if (DetectButton(index_finger_tip, buttons[i], img_h, img_w)):
+                                if(buttons[i].Get_Text() == "Add"):
+                                    #Add menu
+                                    continue
+                                elif(buttons[i].Get_Text == "Delete"):
+                                    #delete
+                                    continue
+                                break
                     else:
-                        cv2.putText(image, "Not Pinching hand 1", (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
+                        #cv2.putText(image, "Not Pinching hand 1", (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
+                        continue
                 elif(size == 2):
                     if count == 0:
                         if distance < (rel_distance/4):
@@ -354,7 +379,8 @@ def main():
                                 else:
                                     circles[i].Set_Edit(False)
                         else:
-                            cv2.putText(image, "Not Pinching hand 1", (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
+                            #cv2.putText(image, "Not Pinching hand 1", (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
+                            continue
 
                         count += 1
                     elif count == 1: 
@@ -381,18 +407,22 @@ def main():
                                 else:
                                     circles[i].Set_Edit(False)
                         else:
-                            cv2.putText(image, "Not Pinching hand 2", (8,100),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
+                            #cv2.putText(image, "Not Pinching hand 2", (8,100),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
+                            continue
 
                         count -= 1
         clock.end_clock()
         hz = clock.result()
-        cv2.putText(image, "Framerate: %0.2f Hz" % hz, (8,40),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
-        cv2.putText(image, "Selected: " + last_pinched_type, (8, 120), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0,0,0), 1)
+        cv2.putText(image, "Framerate: %0.2f Hz" % hz, (500,40),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
+        cv2.putText(image, "Selected: " + last_pinched_type, (500, 120), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0,0,0), 1)
         for shape in rectangles:
-            cv2.rectangle(image, (shape.Get_X(), shape.Get_Y()), (shape.Get_X() + shape.Get_Size(), shape.Get_Y() + shape.Get_Size()), (0, 255, 0), -1)
+            shape.Draw(image)
 
         for shape in circles:
-            cv2.circle(image, (shape.Get_Center_X(), shape.Get_Center_Y()), shape.Get_Radius(), (0, 255, 0), -1)
+            shape.Draw(image)
+
+        for shape in buttons:
+            shape.Draw(image)
         cv2.imshow("Hands Detection", cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
 
         #Press 'q' to exit

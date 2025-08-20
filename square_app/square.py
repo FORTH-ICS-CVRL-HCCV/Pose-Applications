@@ -7,12 +7,13 @@ import random
 
 
 class Rectangle:
-    def __init__(self, x, y, size):
+    def __init__(self, x, y, size, color):
         self.x = x
         self.y = y
         self.size = size
         self.edit = False
         self.type = "rectangle"
+        self.color = color
 
         self.dis_x = 0
         self.dis_y = 0
@@ -32,6 +33,9 @@ class Rectangle:
     def Get_Type(self):
         return self.type
 
+    def Get_Color(self):
+        return self.color
+
     def Set_X(self, new_x):
         self.x = new_x
 
@@ -43,6 +47,12 @@ class Rectangle:
 
     def Set_Edit(self, new_edit):
         self.edit = new_edit
+    
+    def Set_Color(self, new_color):
+        self.color = new_color
+
+    def Set_Type(self, new_type):
+        self.type = new_type
 
     def Move(self, index_finger_tip, img_w, img_h):
         finger_x = int(index_finger_tip[0] * img_w)
@@ -64,4 +74,15 @@ class Rectangle:
             self.y = finger_y - self.dis_y
 
     def Draw(self, image):
-        cv2.rectangle(image, (self.x, self.y), (self.x + self.size, self.y + self.size), (0, 255, 0), -1)
+        cv2.rectangle(image, (self.x, self.y), (self.x + self.size, self.y + self.size), self.color, -1)
+
+    def DetectRectTouch(self, index_finger_tip, img_h, img_w):
+        buffer = 10
+        finger_x = int(index_finger_tip[0] * img_w)
+        finger_y = int(index_finger_tip[1] * img_h)
+
+        if (finger_x > self.x - buffer and finger_x < self.x + self.x + buffer):
+            if (finger_y > self.y - buffer and finger_y < self.y + self.size + buffer):
+                return True
+        
+        return False

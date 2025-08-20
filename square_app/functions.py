@@ -39,49 +39,16 @@ def CalculateRelativeDistance(landmarks_normalized, mp_hands):
     rel_distance = np.linalg.norm(rel1 - rel2)
     return rel_distance
 
-def DetectRectTouch(index_finger_tip, rect, img_h, img_w):
-    buffer = 50
-    finger_x = int(index_finger_tip[0] * img_w)
-    finger_y = int(index_finger_tip[1] * img_h)
-
-    if (finger_x > rect.Get_X() - buffer and finger_x < rect.Get_X() + rect.Get_Size() + buffer):
-        if (finger_y > rect.Get_Y() - buffer and finger_y < rect.Get_Y() + rect.Get_Size() + buffer):
-            return True
-    
-    return False
-
-def DetectCircleTouch(index_finger_tip, circle, img_h, img_w):
-    buffer = 50
-    finger_x = int(index_finger_tip[0] * img_w)
-    finger_y = int(index_finger_tip[1] * img_h)
-
-    distance = np.sqrt((finger_x - circle.Get_Center_X())**2 + (finger_y - circle.Get_Center_Y())**2)
-    if (distance < circle.Get_Radius() + buffer):
-        return True
-    
-    return False
-
-def DetectButton(index_finger_tip, rect, img_h, img_w):
-    buffer = 10
-    finger_x = int(index_finger_tip[0] * img_w)
-    finger_y = int(index_finger_tip[1] * img_h)
-
-    if (finger_x > rect.Get_X() - buffer and finger_x < rect.Get_X() + rect.Get_Size() + buffer):
-        if (finger_y > rect.Get_Y() - buffer and finger_y < rect.Get_Y() + rect.Get_Size() + buffer):
-            return True
-    
-    return False
-
 def DeleteObject(arr, index):
     obj = arr[index]
     arr.pop(index)
     del obj
 
-def CreateObject(arr, type, x, y, size):
+def CreateObject(arr, type, x, y, size, color):
     if type == "rect":
-        r = Rectangle(x, y, size)
+        r = Rectangle(x, y, size, color)
         arr.append(r)
 
     elif type == "circle":
-        c = Circle(x, y, size)
+        c = Circle(x, y, size, color)
         arr.append(c)

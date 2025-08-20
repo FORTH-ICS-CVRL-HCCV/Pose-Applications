@@ -7,12 +7,13 @@ import random
 
 
 class Circle:
-    def __init__(self, center_x, center_y, radius):
+    def __init__(self, center_x, center_y, radius, color):
         self.center_x = center_x
         self.center_y = center_y
         self.radius = radius
         self.edit = False
         self.type = "circle"
+        self.color = color
 
         self.dis_x = 0
         self.dis_y = 0
@@ -32,6 +33,9 @@ class Circle:
     def Get_Type(self):
         return self.type
 
+    def Get_Color(self):
+        return self.color
+
     def Set_Center_X(self, center_x):
         self.center_x = center_x
 
@@ -43,6 +47,12 @@ class Circle:
 
     def Set_Edit(self, new_edit):
         self.edit = new_edit
+    
+    def Set_Type(self, new_type):
+        self.type = new_type
+
+    def Set_Color(self, new_color):
+        self.color = new_color
 
     def Move(self, index_finger_tip, img_w, img_h):
         finger_x = int(index_finger_tip[0] * img_w)
@@ -64,4 +74,15 @@ class Circle:
             self.center_y = finger_y - self.dis_y
 
     def Draw(self, image):
-        cv2.circle(image, (self.center_x, self.center_y), self.radius, (0, 255, 0), -1)
+        cv2.circle(image, (self.center_x, self.center_y), self.radius, self.color, -1)
+
+    def DetectCircleTouch(self, index_finger_tip, img_h, img_w):
+        buffer = 10
+        finger_x = int(index_finger_tip[0] * img_w)
+        finger_y = int(index_finger_tip[1] * img_h)
+
+        distance = np.sqrt((finger_x - self.center_x)**2 + (finger_y - self.center_y)**2)
+        if (distance < self.radius + buffer):
+            return True
+        
+        return False

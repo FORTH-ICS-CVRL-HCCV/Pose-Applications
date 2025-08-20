@@ -77,7 +77,6 @@ def main():
 
                 if(size == 1):
                     if distance < (rel_distance/4):
-                        cv2.putText(image, "Pinching hand 1", (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
                         for i in range(0, len(rectangles)): 
                             if (DetectRectTouch(index_finger_tip, rectangles[i], img_h, img_w)):
                                 rectangles[i].Move(index_finger_tip, img_w, img_h)
@@ -123,7 +122,6 @@ def main():
                 elif(size == 2):
                     if count == 0:
                         if distance < (rel_distance/4):
-                            cv2.putText(image, "Pinching hand 1", (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
                             for i in range(0, len(rectangles)):
                                 if (DetectRectTouch(index_finger_tip, rectangles[i], img_h, img_w)):
                                     rectangles[i].Move(index_finger_tip, img_w, img_h)
@@ -164,13 +162,12 @@ def main():
                                     break   
                             
                         else:
-                            #cv2.putText(image, "Not Pinching hand 1", (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
                             continue
 
                         count += 1
                     elif count == 1: 
                         if distance < (rel_distance/4):
-                            cv2.putText(image, "Pinching hand 2", (8,100),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
+                            
                             for i in range(0, len(rectangles)):
                                 if (DetectRectTouch(index_finger_tip, rectangles[i], img_h, img_w)):
                                     rectangles[i].Move(index_finger_tip, img_w, img_h)
@@ -211,14 +208,14 @@ def main():
                                     break
                             
                         else:
-                            #cv2.putText(image, "Not Pinching hand 2", (8,100),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
+                            
                             continue
 
                         count -= 1
         clock.end_clock()
         hz = clock.result()
         cv2.putText(image, "Framerate: %0.2f Hz" % hz, (500,40),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
-        cv2.putText(image, "Selected: " + last_pinched_type, (500, 120), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0,0,0), 1)
+        cv2.putText(image, "Selected: " + last_pinched_type, (500, 70), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0,0,0), 1)
         for shape in rectangles:
             shape.Draw(image)
 

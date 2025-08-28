@@ -20,6 +20,7 @@ def main():
     circ = Circle(300, 300, 50, (0, 255, 0))
     but1 = Button(50, 50, (0, 255, 0), 100, "Add")
     but2 = Button(200, 50, (255, 0, 0), 100, "Delete")
+    but3 = Button(350, 50, (0, 0, 250), 100, "Edit")
 
     rectangles = []
     circles = []
@@ -32,6 +33,7 @@ def main():
     circles.append(circ)
     buttons.append(but1)
     buttons.append(but2)
+    buttons.append(but3)
     
 
      
@@ -114,7 +116,8 @@ def main():
                                         DeleteObject(circles, last_pinched_index)
                                         last_pinched_index = 0
                                         last_pinched_type = ""
-                                    
+                                elif(buttons[i].Get_Text() == "Edit"):
+                                    continue;   
                                 break
                     else:
                         #cv2.putText(image, "Not Pinching hand 1", (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)

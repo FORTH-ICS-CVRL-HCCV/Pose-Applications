@@ -77,7 +77,7 @@ def main():
 
                 rel_distance = CalculateRelativeDistance(landmarks_normalized, mp_hands)
 
-                if(1 == 1):
+                if(size == 1):
                     if distance < (rel_distance/4):
                         for i in range(0, len(rectangles)): 
                             if (rectangles[i].DetectRectTouch(index_finger_tip, img_h, img_w)):
@@ -122,7 +122,99 @@ def main():
                     else:
                         #cv2.putText(image, "Not Pinching hand 1", (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
                         continue
-                
+                elif(size == 2):
+                    if count == 0:
+                        if distance < (rel_distance/4):
+                            for i in range(0, len(rectangles)):
+                                if (rectangles[i].DetectRectTouch(index_finger_tip, img_h, img_w)):
+                                    rectangles[i].Move(index_finger_tip, img_w, img_h)
+                                    last_pinched_type = rectangles[i].Get_Type()
+                                    last_pinched_index = i
+                        
+                                    break
+
+                                else:
+                                    rectangles[i].Set_Edit(False)
+                            for i in range(0, len(circles)): 
+                                if (circles[i].DetectCircleTouch(index_finger_tip, img_h, img_w)):
+                                    circles[i].Move(index_finger_tip, img_w, img_h)
+                                    last_pinched_type = circles[i].Get_Type()
+                                    last_pinched_index = i
+                                    
+                                    break
+
+                                else:
+                                    circles[i].Set_Edit(False)
+                            for i in range(0, len(buttons)):
+                                if (buttons[i].DetectButtonTouch(index_finger_tip, img_h, img_w)):
+                                    if(buttons[i].Get_Text() == "Add" and buffer == 0):
+                                        if(random.randint(0, 1) == 0):
+                                            CreateObject(rectangles, "rect", 300, 300, 100, (0, 255, 0))
+                                        else:
+                                            CreateObject(circles, "circle", 300, 300, 50, (0, 255, 0))
+                                        buffer = 50
+                                    elif(buttons[i].Get_Text() == "Delete"):
+                                        if last_pinched_type == "rectangle":
+                                            DeleteObject(rectangles, last_pinched_index)
+                                            last_pinched_index = 0
+                                            last_pinched_type = ""
+                                        elif last_pinched_type == "circle":
+                                            DeleteObject(circles, last_pinched_index)
+                                            last_pinched_index = 0
+                                            last_pinched_type = ""
+                                    break   
+                            
+                        else:
+                            continue
+
+                        count += 1
+                    elif count == 1: 
+                        if distance < (rel_distance/4):
+                            
+                            for i in range(0, len(rectangles)):
+                                if (rectangles[i].DetectRectTouch(index_finger_tip, img_h, img_w)):
+                                    rectangles[i].Move(index_finger_tip, img_w, img_h)
+                                    last_pinched_type = rectangles[i].Get_Type()
+                                    last_pinched_index = i
+                        
+                                    break
+
+                                else:
+                                    rectangles[i].Set_Edit(False)
+                            for i in range(0, len(circles)): 
+                                if (circles[i].DetectCircleTouch(index_finger_tip, img_h, img_w)):
+                                    circles[i].Move(index_finger_tip, img_w, img_h)
+                                    last_pinched_type = circles[i].Get_Type()
+                                    last_pinched_index = i
+                                    
+                                    break
+
+                                else:
+                                    circles[i].Set_Edit(False)
+                            for i in range(0, len(buttons)):
+                                if (buttons[i].DetectButtonTouch(index_finger_tip, img_h, img_w)):
+                                    if(buttons[i].Get_Text() == "Add" and buffer == 0):
+                                        if(random.randint(0, 1) == 0):
+                                            CreateObject(rectangles, "rect", 300, 300, 100, (0, 255, 0))
+                                        else:
+                                            CreateObject(circles, "circle", 300, 300, 50, (0, 255, 0))
+                                        buffer = 50
+                                    elif(buttons[i].Get_Text() == "Delete"):
+                                        if last_pinched_type == "rectangle":
+                                            DeleteObject(rectangles, last_pinched_index)
+                                            last_pinched_index = 0
+                                            last_pinched_type = ""
+                                        elif last_pinched_type == "circle":
+                                            DeleteObject(circles, last_pinched_index)
+                                            last_pinched_index = 0
+                                            last_pinched_type = ""
+                                    break
+                            
+                        else:
+                            
+                            continue
+
+                        count -= 1
         clock.end_clock()
         hz = clock.result()
         cv2.putText(image, "Framerate: %0.2f Hz" % hz, (500,40),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)

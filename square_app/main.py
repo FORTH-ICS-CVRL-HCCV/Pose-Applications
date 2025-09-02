@@ -10,21 +10,25 @@ from square import *
 from circle import *
 from button import *
 from functions import *
+from hands import *
 
 def main():
     buffer = 0
     clock = Clock()
     cap = CameraSet()
 
-    rect = Rectangle(100, 100, 100, (0, 255, 0))
+    rect = Rectangle(100, 300, 100, (0, 255, 0))
     circ = Circle(300, 300, 50, (0, 255, 0))
     but1 = Button(50, 50, (0, 255, 0), 100, "Add")
     but2 = Button(200, 50, (255, 0, 0), 100, "Delete")
     but3 = Button(350, 50, (0, 0, 250), 100, "Edit")
+    left_hand = Hand()
+    right_hand = Hand()
 
     rectangles = []
     circles = []
     buttons = []
+    hands = []
 
     last_pinched_type = ""
     last_pinched_index = 0
@@ -34,6 +38,8 @@ def main():
     buttons.append(but1)
     buttons.append(but2)
     buttons.append(but3)
+    hands.append(left_hand)
+    hands.append(right_hand)
     
 
      
@@ -56,72 +62,85 @@ def main():
 
 
         if results.multi_hand_landmarks:
-            size = len(results.multi_hand_landmarks)
-            count = 0
-            for hands in results.multi_hand_landmarks:   
-                mp_drawing.draw_landmarks(image, hands, mp_hands.HAND_CONNECTIONS)
+
+            for landmark, handed in zip(results.multi_hand_landmarks, results.multi_handedness):
+                if(len(results.multi_hand_landmarks) == 0):
+                    hands[0].isEmpty()
+                    hands[1].isEmpty()
+                elif(len(results.multi_hand_landmarks) == 1):
+                    if handed.classification[0].label == "Right":
+                        hands[1].setup(landmark, handed)
+                        hands[0].isEmpty()
+                    elif handed.classification[0].label == "Left":
+                        hands[0].setup(landmark, handed)
+                        hands[1].isEmpty()
+                elif(len(results.multi_hand_landmarks) == 2):
+                    if handed.classification[0].label == "Right":
+                        hands[1].setup(landmark, handed)
+                    elif handed.classification[0].label == "Left":
+                        hands[0].setup(landmark, handed)
+
+            for h in hands:   
+                hand = h.Get_Landmark()
+                mp_drawing.draw_landmarks(image, hand, mp_hands.HAND_CONNECTIONS)
+                
+                img_h, img_w, _ = image.shape
+
+                distance = 0
+                rel_distance = 0
+
+                if(h.isActive()):
+                    landmarks_normalized = np.array([[landmark.x, landmark.y] for landmark in hand.landmark])
+                    index_finger_tip = landmarks_normalized[mp_hands.HandLandmark.INDEX_FINGER_TIP.value]
+                    thumb_tip = landmarks_normalized[mp_hands.HandLandmark.THUMB_TIP.value]
+                    distance = np.linalg.norm(index_finger_tip - thumb_tip)
+                    rel_distance = CalculateRelativeDistance(landmarks_normalized, mp_hands)
                 
 
-                img_h, img_w, _ = image.shape
-        
-
-                for idx, landmark in enumerate(hands.landmark):
-                    x = int(landmark.x * img_w)
-                    y = int(landmark.y * img_h)
-                    cv2.putText(image, str(idx), (x, y),  cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1)
-
-                landmarks_normalized = np.array([[landmark.x, landmark.y] for landmark in hands.landmark])
-                index_finger_tip = landmarks_normalized[mp_hands.HandLandmark.INDEX_FINGER_TIP.value]
-                thumb_tip = landmarks_normalized[mp_hands.HandLandmark.THUMB_TIP.value]
-                distance = np.linalg.norm(index_finger_tip - thumb_tip)
-
-                rel_distance = CalculateRelativeDistance(landmarks_normalized, mp_hands)
-
-                if(1 == 1):
-                    if distance < (rel_distance/4):
-                        for i in range(0, len(rectangles)): 
-                            if (rectangles[i].DetectRectTouch(index_finger_tip, img_h, img_w)):
-                                rectangles[i].Move(index_finger_tip, img_w, img_h)
-                                last_pinched_type = rectangles[i].Get_Type()
-                                last_pinched_index = i
+                if distance < (rel_distance/4):
+                    for i in range(0, len(rectangles)): 
+                        if (rectangles[i].DetectRectTouch(index_finger_tip, img_h, img_w)):
+                            rectangles[i].Move(index_finger_tip, img_w, img_h)
+                            last_pinched_type = rectangles[i].Get_Type()
+                            last_pinched_index = i
                                 
-                                break
+                            break
 
-                            else:
-                                rectangles[i].Set_Edit(False)
-                        for i in range(0, len(circles)): 
-                            if (circles[i].DetectCircleTouch(index_finger_tip, img_h, img_w)):
-                                circles[i].Move(index_finger_tip, img_w, img_h)
-                                last_pinched_type = circles[i].Get_Type()
-                                last_pinched_index = i
+                        else:
+                            rectangles[i].Set_Edit(False)
+                    for i in range(0, len(circles)): 
+                        if (circles[i].DetectCircleTouch(index_finger_tip, img_h, img_w)):
+                            circles[i].Move(index_finger_tip, img_w, img_h)
+                            last_pinched_type = circles[i].Get_Type()
+                            last_pinched_index = i
                                 
-                                break
+                            break
 
-                            else:
-                                circles[i].Set_Edit(False)
-                        for i in range(0, len(buttons)):
-                            if (buttons[i].DetectButtonTouch(index_finger_tip, img_h, img_w)):
-                                if(buttons[i].Get_Text() == "Add" and buffer == 0):
-                                    if(random.randint(0, 1) == 0):
-                                        CreateObject(rectangles, "rect", 300, 300, 100, (0, 255, 0))
-                                    else:
-                                        CreateObject(circles, "circle", 300, 300, 50, (0, 255, 0))
-                                    buffer = 50
-                                elif(buttons[i].Get_Text() == "Delete"):
-                                    if last_pinched_type == "rectangle":
-                                        DeleteObject(rectangles, last_pinched_index)
-                                        last_pinched_index = 0
-                                        last_pinched_type = ""
-                                    elif last_pinched_type == "circle":
-                                        DeleteObject(circles, last_pinched_index)
-                                        last_pinched_index = 0
-                                        last_pinched_type = ""
-                                elif(buttons[i].Get_Text() == "Edit"):
-                                    continue;   
-                                break
-                    else:
-                        #cv2.putText(image, "Not Pinching hand 1", (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
-                        continue
+                        else:
+                            circles[i].Set_Edit(False)
+                    for i in range(0, len(buttons)):
+                        if (buttons[i].DetectButtonTouch(index_finger_tip, img_h, img_w)):
+                            if(buttons[i].Get_Text() == "Add" and buffer == 0):
+                                if(random.randint(0, 1) == 0):
+                                    CreateObject(rectangles, "rect", 300, 300, 100, (0, 255, 0))
+                                else:
+                                    CreateObject(circles, "circle", 300, 300, 50, (0, 255, 0))
+                                buffer = 50
+                            elif(buttons[i].Get_Text() == "Delete"):
+                                if last_pinched_type == "rectangle":
+                                    DeleteObject(rectangles, last_pinched_index)
+                                    last_pinched_index = 0
+                                    last_pinched_type = ""
+                                elif last_pinched_type == "circle":
+                                    DeleteObject(circles, last_pinched_index)
+                                    last_pinched_index = 0
+                                    last_pinched_type = ""
+                            elif(buttons[i].Get_Text() == "Edit"):
+                                continue;   
+                            break
+                else:
+                    #cv2.putText(image, "Not Pinching hand 1", (8,70),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
+                    continue
                 
         clock.end_clock()
         hz = clock.result()

@@ -52,3 +52,17 @@ def CreateObject(arr, type, x, y, size, color):
     elif type == "circle":
         c = Circle(x, y, size, color)
         arr.append(c)
+
+def draw(image, hz, rectangles, circles, buttons, last_pinched_type):
+    cv2.putText(image, "Framerate: %0.2f Hz" % hz, (500,40),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
+    cv2.putText(image, "Selected: " + last_pinched_type, (500, 70), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0,0,0), 1)
+    for shape in rectangles:
+        shape.Draw(image)
+
+    for shape in circles:
+        shape.Draw(image)
+
+    for shape in buttons:
+        shape.Draw(image)
+    
+

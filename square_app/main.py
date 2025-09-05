@@ -97,7 +97,9 @@ def main():
                     rel_distance = CalculateRelativeDistance(landmarks_normalized, mp_hands)
                 
 
-                if distance < (rel_distance/4):
+
+
+                if h.checkPinch(distance, rel_distance):
                     for i in range(0, len(rectangles)): 
                         if (rectangles[i].DetectRectTouch(index_finger_tip, img_h, img_w)):
                             rectangles[i].Move(index_finger_tip, img_w, img_h)

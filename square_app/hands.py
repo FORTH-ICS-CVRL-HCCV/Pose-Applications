@@ -11,6 +11,9 @@ class Hand:
         self.handedness = None
         self.last_landmarks = None
         self.last_handedness = None
+        self.buffer_pinch = []
+        self.buffer_rel = []
+        self.state = False
 
     def setup(self, land, side):
         self.last_handedness = self.handedness
@@ -41,3 +44,24 @@ class Hand:
             return False
         else:
             return True
+
+    def checkPinch(self, dist, rel):
+        self.buffer_pinch.append(dist)
+        distance = sorted(self.buffer_pinch)[len(self.buffer_pinch)//2]
+
+        if(len(self.buffer_pinch) == 7):
+            self.buffer_pinch.pop(0)
+
+        self.buffer_rel.append(rel)
+        relative_dist = sorted(self.buffer_rel)[len(self.buffer_rel)//2]
+
+        if(len(self.buffer_rel) == 7):
+            self.buffer_rel.pop(0)
+
+        if distance > (relative_dist/3):
+            self.state = False
+        elif distance < (relative_dist/4):
+            self.state = True
+        
+        return self.state
+

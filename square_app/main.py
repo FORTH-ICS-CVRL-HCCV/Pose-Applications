@@ -79,7 +79,7 @@ def main():
                         hands[1].setup(landmark, handed)
                     elif handed.classification[0].label == "Left":
                         hands[0].setup(landmark, handed)
-            
+  
             for h in hands:   
                 hand = h.Get_Landmark()
                 mp_drawing.draw_landmarks(image, hand, mp_hands.HAND_CONNECTIONS)
@@ -103,25 +103,23 @@ def main():
                 if h.checkPinch(distance, rel_distance):
                     finger_position = h.GetPosition(index_finger_tip)
                     for i in range(0, len(rectangles)):
-                        if (rectangles[i].Get_Edit() == True) and (rectangles[i].Get_User() != hands.index(h)):
-                            continue
                         if (rectangles[i].DetectRectTouch(finger_position, img_h, img_w)):
-                            rectangles[i].Set_User(hands.index(h))
                             rectangles[i].Move(finger_position, img_w, img_h)
                             last_pinched_type = rectangles[i].Get_Type()
                             last_pinched_index = i
                                 
                             break
+                        else:
+                            rectangles[i].Set_Edit(False)
                     for i in range(0, len(circles)):
-                        if (circles[i].Get_Edit() == True) and (circles[i].Get_User() != hands.index(h)):
-                            continue
                         if (circles[i].DetectCircleTouch(finger_position, img_h, img_w)):
-                            circles[i].Set_User(hands.index(h))
                             circles[i].Move(finger_position, img_w, img_h)
                             last_pinched_type = circles[i].Get_Type()
                             last_pinched_index = i
                                 
                             break
+                        else:
+                            circles[i].Set_Edit(False)
                     for i in range(0, len(buttons)):
                         if (buttons[i].DetectButtonTouch(finger_position, img_h, img_w)):
                             if(buttons[i].Get_Text() == "Add" and buffer == 0):
@@ -142,7 +140,6 @@ def main():
                             #elif(buttons[i].Get_Text() == "Edit"):
                                 
                             break
-            Reset(rectangles, circles)
 
 
         clock.end_clock()

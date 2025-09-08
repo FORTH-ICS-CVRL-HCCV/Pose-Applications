@@ -12,8 +12,6 @@ class Circle:
         self.center_y = center_y
         self.radius = radius
         self.edit = False
-        self.last_frame = False
-        self.user = -1
         self.type = "circle"
         self.color = color
 
@@ -32,12 +30,6 @@ class Circle:
     def Get_Edit(self):
         return self.edit
 
-    def Get_User(self):
-        return self.user
-    
-    def Get_Last_Frame(self):
-        return self.last_frame
-
     def Get_Type(self):
         return self.type
 
@@ -55,12 +47,6 @@ class Circle:
 
     def Set_Edit(self, new_edit):
         self.edit = new_edit
-
-    def Set_User(self, new_user):
-        self.user = new_user
-
-    def Set_Last_Frame(self, new_frame):
-        self.last_frame = new_frame
     
     def Set_Type(self, new_type):
         self.type = new_type
@@ -68,9 +54,7 @@ class Circle:
     def Set_Color(self, new_color):
         self.color = new_color
 
-    def Move(self, index_finger_tip, img_w, img_h):
-        self.last_frame = True
-        
+    def Move(self, index_finger_tip, img_w, img_h):        
         finger_x = int(index_finger_tip[0] * img_w)
         finger_y = int(index_finger_tip[1] * img_h)
 

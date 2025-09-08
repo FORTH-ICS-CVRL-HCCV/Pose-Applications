@@ -77,7 +77,12 @@ class Rectangle:
         cv2.rectangle(image, (self.x, self.y), (self.x + self.size, self.y + self.size), self.color, -1)
 
     def DetectRectTouch(self, index_finger_tip, img_h, img_w):
-        buffer = 10
+        buffer = 0
+        if self.edit == False:
+            buffer = 10
+        else:
+            buffer = 100
+        
         finger_x = int(index_finger_tip[0] * img_w)
         finger_y = int(index_finger_tip[1] * img_h)
 

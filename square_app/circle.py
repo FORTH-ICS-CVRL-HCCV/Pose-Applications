@@ -77,7 +77,13 @@ class Circle:
         cv2.circle(image, (self.center_x, self.center_y), self.radius, self.color, -1)
 
     def DetectCircleTouch(self, index_finger_tip, img_h, img_w):
-        buffer = 10
+        buffer = 0
+        if self.edit == False:
+            buffer = 10
+        else:
+            buffer = 100
+        
+        
         finger_x = int(index_finger_tip[0] * img_w)
         finger_y = int(index_finger_tip[1] * img_h)
 

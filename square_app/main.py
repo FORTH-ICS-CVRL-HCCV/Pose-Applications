@@ -88,6 +88,7 @@ def main():
 
                 distance = 0
                 rel_distance = 0
+                finger_position = 0
 
                 if(h.isActive()):
                     landmarks_normalized = np.array([[landmark.x, landmark.y] for landmark in hand.landmark])
@@ -100,9 +101,10 @@ def main():
 
 
                 if h.checkPinch(distance, rel_distance):
+                    finger_position = h.GetPosition(index_finger_tip)
                     for i in range(0, len(rectangles)): 
-                        if (rectangles[i].DetectRectTouch(index_finger_tip, img_h, img_w)):
-                            rectangles[i].Move(index_finger_tip, img_w, img_h)
+                        if (rectangles[i].DetectRectTouch(finger_position, img_h, img_w)):
+                            rectangles[i].Move(finger_position, img_w, img_h)
                             last_pinched_type = rectangles[i].Get_Type()
                             last_pinched_index = i
                                 
@@ -111,8 +113,8 @@ def main():
                         else:
                             rectangles[i].Set_Edit(False)
                     for i in range(0, len(circles)): 
-                        if (circles[i].DetectCircleTouch(index_finger_tip, img_h, img_w)):
-                            circles[i].Move(index_finger_tip, img_w, img_h)
+                        if (circles[i].DetectCircleTouch(finger_position, img_h, img_w)):
+                            circles[i].Move(finger_position, img_w, img_h)
                             last_pinched_type = circles[i].Get_Type()
                             last_pinched_index = i
                                 
@@ -121,7 +123,7 @@ def main():
                         else:
                             circles[i].Set_Edit(False)
                     for i in range(0, len(buttons)):
-                        if (buttons[i].DetectButtonTouch(index_finger_tip, img_h, img_w)):
+                        if (buttons[i].DetectButtonTouch(finger_position, img_h, img_w)):
                             if(buttons[i].Get_Text() == "Add" and buffer == 0):
                                 if(random.randint(0, 1) == 0):
                                     CreateObject(rectangles, "rect", 300, 300, 100, (0, 255, 0))

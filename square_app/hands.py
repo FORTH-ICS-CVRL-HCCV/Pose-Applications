@@ -13,6 +13,7 @@ class Hand:
         self.last_handedness = None
         self.buffer_pinch = []
         self.buffer_rel = []
+        self.buffer_pos = []
         self.state = False
 
     def setup(self, land, side):
@@ -65,3 +66,22 @@ class Hand:
         
         return self.state
 
+    def GetPosition(self, position):
+        return self.AveragePos(position)
+
+    
+    def AveragePos(self, pos):
+        self.buffer_pos.append(pos)
+        buf_x = []
+        buf_y = []
+        for t in self.buffer_pos:
+            buf_x.append(t[0])
+            buf_y.append(t[1])
+
+        position_x = sorted(buf_x)[len(buf_x)//2]
+        position_y = sorted(buf_y)[len(buf_y)//2]
+
+        if(len(self.buffer_pos) == 7):
+            self.buffer_pos.pop(0)
+
+        return [position_x, position_y]

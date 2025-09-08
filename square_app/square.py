@@ -12,6 +12,8 @@ class Rectangle:
         self.y = y
         self.size = size
         self.edit = False
+        self.user = -1
+        self.last_frame = False
         self.type = "rectangle"
         self.color = color
 
@@ -30,6 +32,12 @@ class Rectangle:
     def Get_Edit(self):
         return self.edit
 
+    def Get_User(self):
+        return self.user
+
+    def Get_Last_Frame(self):
+        return self.last_frame
+
     def Get_Type(self):
         return self.type
 
@@ -46,7 +54,13 @@ class Rectangle:
         self.size = new_size
 
     def Set_Edit(self, new_edit):
-        self.edit = new_edit
+        self.new_edit = new_edit
+
+    def Set_User(self, new_user):
+        self.user = new_user
+
+    def Set_Last_Frame(self, new_frame):
+        self.new_frame = new_frame
     
     def Set_Color(self, new_color):
         self.color = new_color
@@ -55,6 +69,8 @@ class Rectangle:
         self.type = new_type
 
     def Move(self, index_finger_tip, img_w, img_h):
+        self.last_frame = True
+        
         finger_x = int(index_finger_tip[0] * img_w)
         finger_y = int(index_finger_tip[1] * img_h)
 

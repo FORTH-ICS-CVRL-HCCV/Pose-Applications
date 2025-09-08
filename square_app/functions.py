@@ -66,3 +66,17 @@ def draw(image, hz, rectangles, circles, buttons, last_pinched_type):
         shape.Draw(image)
     
 
+def Reset(rect, circles):
+    for r in rect:
+        if r.Get_Last_Frame() == False:
+            r.Set_Edit(False)
+            r.Set_User(-1)
+        else:
+            r.Set_Last_Frame(False)
+
+    for c in circles:
+        if c.Get_Last_Frame() == False:
+            c.Set_Edit(False)
+            c.Set_User(-1)
+        else:
+            c.Set_Last_Frame(False)

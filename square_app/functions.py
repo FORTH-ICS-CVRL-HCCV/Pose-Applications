@@ -53,9 +53,10 @@ def CreateObject(arr, type, x, y, size, color):
         c = Circle(x, y, size, color)
         arr.append(c)
 
-def draw(image, hz, rectangles, circles, buttons, last_pinched_type):
+def draw(image, hz, rectangles, circles, buttons, last_pinched_type_0, last_pinched_type_1):
     cv2.putText(image, "Framerate: %0.2f Hz" % hz, (500,40),  cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 1)
-    cv2.putText(image, "Selected: " + last_pinched_type, (500, 70), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0,0,0), 1)
+    cv2.putText(image, "Selected Left: " + last_pinched_type_0, (500, 70), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0,0,0), 1)
+    cv2.putText(image, "Selected Right: " + last_pinched_type_1, (500, 100), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0,0,0), 1)
     for shape in rectangles:
         shape.Draw(image)
 

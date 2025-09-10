@@ -30,9 +30,6 @@ def main():
     buttons = []
     hands = []
 
-    last_pinched_type = ""
-    last_pinched_index = 0
-
     rectangles.append(rect)
     circles.append(circ)
     buttons.append(but1)
@@ -103,8 +100,8 @@ def main():
                         for i in range(0, len(rectangles)):
                             if (rectangles[i].DetectRectTouch(finger_position, img_h, img_w)):
                                 #rectangles[i].Move(finger_position, img_w, img_h)
-                                last_pinched_type = rectangles[i].Get_Type()
-                                last_pinched_index = i
+                                h.Set_Last_Pinched_Type(rectangles[i].Get_Type())
+                                h.Set_Last_Pinched_Index(i)
                                 h.Set_Type("rect")
                                 h.Set_Index(i)
                                 h.Set_Editing(True)
@@ -113,8 +110,8 @@ def main():
                         for i in range(0, len(circles)):
                             if (circles[i].DetectCircleTouch(finger_position, img_h, img_w)):
                                 #circles[i].Move(finger_position, img_w, img_h)
-                                last_pinched_type = circles[i].Get_Type()
-                                last_pinched_index = i
+                                h.Set_Last_Pinched_Type(circles[i].Get_Type())
+                                h.Set_Last_Pinched_Index(i)
                                 h.Set_Type("circle")
                                 h.Set_Index(i)
                                 h.Set_Editing(True)
@@ -129,14 +126,14 @@ def main():
                                         CreateObject(circles, "circle", 300, 300, 50, (0, 255, 0))
                                     buffer = 50
                                 elif(buttons[i].Get_Text() == "Delete"):
-                                    if last_pinched_type == "rect":
-                                        DeleteObject(rectangles, last_pinched_index)
-                                        last_pinched_index = 0
-                                        last_pinched_type = ""
-                                    elif last_pinched_type == "circle":
-                                        DeleteObject(circles, last_pinched_index)
-                                        last_pinched_index = 0
-                                        last_pinched_type = ""
+                                    if h.Get_Last_Pinched_Type() == "rect":
+                                        DeleteObject(rectangles, h.Get_Last_Pinched_Index())
+                                        h.Set_Last_Pinched_Type("")
+                                        h.Set_Last_Pinched_Index(0)
+                                    elif h.Get_Last_Pinched_Type() == "circle":
+                                        DeleteObject(circles, h.Get_Last_Pinched_Index())
+                                        h.Set_Last_Pinched_Type("")
+                                        h.Set_Last_Pinched_Index(0)
                                 #elif(buttons[i].Get_Text() == "Edit"):
                                     
                                 break
@@ -154,7 +151,7 @@ def main():
                         h.ClearPos()
         clock.end_clock()
         hz = clock.result()
-        draw(image, hz, rectangles, circles, buttons, last_pinched_type)
+        draw(image, hz, rectangles, circles, buttons, hands[0].Get_Last_Pinched_Type(), hands[1].Get_Last_Pinched_Type())
         cv2.imshow("Hands Detection", cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
 
         #Press 'q' to exit

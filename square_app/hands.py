@@ -18,6 +18,8 @@ class Hand:
         self.type = ""
         self.index = 0
         self.editing = False
+        self.last_pinched_type = ""
+        self.last_pinched_index = ""
 
 
     def setup(self, land, side):
@@ -52,6 +54,18 @@ class Hand:
 
     def Get_Editing(self):
         return self.editing
+    
+    def Get_Last_Pinched_Type(self):
+        return self.last_pinched_type
+
+    def Get_Last_Pinched_Index(self):
+        return self.last_pinched_index
+
+    def Set_Last_Pinched_Type(self, new_type):
+        self.last_pinched_type = new_type
+
+    def Set_Last_Pinched_Index(self, new_index):
+        self.last_pinched_index = new_index
 
     def Set_Type(self, new_type):
         self.type = new_type

@@ -99,15 +99,15 @@ def main():
 
                 if h.checkPinch(distance, rel_distance):
                     finger_position = h.GetPosition(index_finger_tip)
-                    if h.editing == False:
+                    if h.Get_Editing() == False:
                         for i in range(0, len(rectangles)):
                             if (rectangles[i].DetectRectTouch(finger_position, img_h, img_w)):
                                 #rectangles[i].Move(finger_position, img_w, img_h)
                                 last_pinched_type = rectangles[i].Get_Type()
                                 last_pinched_index = i
-                                h.type = "rect"
-                                h.index = i
-                                h.editing = True
+                                h.Set_Type("rect")
+                                h.Set_Index(i)
+                                h.Set_Editing(True)
                                     
                                 break
                         for i in range(0, len(circles)):
@@ -115,9 +115,9 @@ def main():
                                 #circles[i].Move(finger_position, img_w, img_h)
                                 last_pinched_type = circles[i].Get_Type()
                                 last_pinched_index = i
-                                h.type = "circle"
-                                h.index = i
-                                h.editing = True
+                                h.Set_Type("circle")
+                                h.Set_Index(i)
+                                h.Set_Editing(True)
                                     
                                 break
                         for i in range(0, len(buttons)):
@@ -141,16 +141,16 @@ def main():
                                     
                                 break
                     else:
-                        if h.type == "rect":
-                            rectangles[h.index].Move(finger_position, img_w, img_h)
-                        elif h.type == "circle":
-                            circles[h.index].Move(finger_position, img_w, img_h)
+                        if h.Get_Type() == "rect":
+                            rectangles[h.Get_Index()].Move(finger_position, img_w, img_h)
+                        elif h.Get_Type() == "circle":
+                            circles[h.Get_Index()].Move(finger_position, img_w, img_h)
                 else:
-                    if h.editing == True:
-                        if h.type == "rect":
-                            rectangles[h.index].Set_Edit(False)
-                        elif h.type == "circle":
-                            circles[h.index].Set_Edit(False)
+                    if h.Get_Editing() == True:
+                        if h.Get_Type() == "rect":
+                            rectangles[h.Get_Index()].Set_Edit(False)
+                        elif h.Get_Type() == "circle":
+                            circles[h.Get_Index()].Set_Edit(False)
                         h.ClearPos()
         clock.end_clock()
         hz = clock.result()

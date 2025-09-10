@@ -44,6 +44,24 @@ class Hand:
     def Get_Last_Handedness(self):
         return self.handedness
 
+    def Get_Type(self):
+        return self.type
+    
+    def Get_Index(self):
+        return self.index
+
+    def Get_Editing(self):
+        return self.editing
+
+    def Set_Type(self, new_type):
+        self.type = new_type
+    
+    def Set_Index(self, new_index):
+        self.index = new_index
+
+    def Set_Editing(self, new_editing):
+        self.editing = new_editing
+
     def isActive(self):
         if(self.handedness == None or self.landmarks == None):
             return False

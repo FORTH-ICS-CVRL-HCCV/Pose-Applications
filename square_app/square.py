@@ -12,7 +12,7 @@ class Rectangle:
         self.y = y
         self.size = size
         self.edit = False
-        self.type = "rectangle"
+        self.type = "rect"
         self.color = color
 
         self.dis_x = 0
@@ -46,7 +46,7 @@ class Rectangle:
         self.size = new_size
 
     def Set_Edit(self, new_edit):
-        self.new_edit = new_edit
+        self.edit = new_edit
     
     def Set_Color(self, new_color):
         self.color = new_color
@@ -86,7 +86,7 @@ class Rectangle:
         finger_x = int(index_finger_tip[0] * img_w)
         finger_y = int(index_finger_tip[1] * img_h)
 
-        if (finger_x > self.x - buffer and finger_x < self.x + self.x + buffer):
+        if (finger_x > self.x - buffer and finger_x < self.x + self.size + buffer):
             if (finger_y > self.y - buffer and finger_y < self.y + self.size + buffer):
                 return True
         

@@ -15,6 +15,10 @@ class Hand:
         self.buffer_rel = []
         self.buffer_pos = []
         self.state = False
+        self.type = ""
+        self.index = 0
+        self.editing = False
+
 
     def setup(self, land, side):
         self.last_handedness = self.handedness
@@ -85,3 +89,9 @@ class Hand:
             self.buffer_pos.pop(0)
 
         return [position_x, position_y]
+
+    def ClearPos(self):
+        self.buffer_pos.clear()
+        self.index = 0
+        self.type = ""
+        self.editing = False

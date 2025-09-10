@@ -62,9 +62,8 @@ def main():
 
 
         if results.multi_hand_landmarks:
-
             for landmark, handed in zip(results.multi_hand_landmarks, results.multi_handedness):
-                if(len(results.multi_hand_landmarks) == 0):
+                if(results.multi_hand_landmarks == None):
                     hands[0].isEmpty()
                     hands[1].isEmpty()
                 elif(len(results.multi_hand_landmarks) == 1):
@@ -98,50 +97,61 @@ def main():
                     rel_distance = CalculateRelativeDistance(landmarks_normalized, mp_hands)
                 
 
-
-
                 if h.checkPinch(distance, rel_distance):
                     finger_position = h.GetPosition(index_finger_tip)
-                    for i in range(0, len(rectangles)):
-                        if (rectangles[i].DetectRectTouch(finger_position, img_h, img_w)):
-                            rectangles[i].Move(finger_position, img_w, img_h)
-                            last_pinched_type = rectangles[i].Get_Type()
-                            last_pinched_index = i
-                                
-                            break
-                        else:
-                            rectangles[i].Set_Edit(False)
-                    for i in range(0, len(circles)):
-                        if (circles[i].DetectCircleTouch(finger_position, img_h, img_w)):
-                            circles[i].Move(finger_position, img_w, img_h)
-                            last_pinched_type = circles[i].Get_Type()
-                            last_pinched_index = i
-                                
-                            break
-                        else:
-                            circles[i].Set_Edit(False)
-                    for i in range(0, len(buttons)):
-                        if (buttons[i].DetectButtonTouch(finger_position, img_h, img_w)):
-                            if(buttons[i].Get_Text() == "Add" and buffer == 0):
-                                if(random.randint(0, 1) == 0):
-                                    CreateObject(rectangles, "rect", 300, 300, 100, (0, 255, 0))
-                                else:
-                                    CreateObject(circles, "circle", 300, 300, 50, (0, 255, 0))
-                                buffer = 50
-                            elif(buttons[i].Get_Text() == "Delete"):
-                                if last_pinched_type == "rectangle":
-                                    DeleteObject(rectangles, last_pinched_index)
-                                    last_pinched_index = 0
-                                    last_pinched_type = ""
-                                elif last_pinched_type == "circle":
-                                    DeleteObject(circles, last_pinched_index)
-                                    last_pinched_index = 0
-                                    last_pinched_type = ""
-                            #elif(buttons[i].Get_Text() == "Edit"):
-                                
-                            break
-
-
+                    if h.editing == False:
+                        for i in range(0, len(rectangles)):
+                            if (rectangles[i].DetectRectTouch(finger_position, img_h, img_w)):
+                                #rectangles[i].Move(finger_position, img_w, img_h)
+                                last_pinched_type = rectangles[i].Get_Type()
+                                last_pinched_index = i
+                                h.type = "rect"
+                                h.index = i
+                                h.editing = True
+                                    
+                                break
+                        for i in range(0, len(circles)):
+                            if (circles[i].DetectCircleTouch(finger_position, img_h, img_w)):
+                                #circles[i].Move(finger_position, img_w, img_h)
+                                last_pinched_type = circles[i].Get_Type()
+                                last_pinched_index = i
+                                h.type = "circle"
+                                h.index = i
+                                h.editing = True
+                                    
+                                break
+                        for i in range(0, len(buttons)):
+                            if (buttons[i].DetectButtonTouch(finger_position, img_h, img_w)):
+                                if(buttons[i].Get_Text() == "Add" and buffer == 0):
+                                    if(random.randint(0, 1) == 0):
+                                        CreateObject(rectangles, "rect", 300, 300, 100, (0, 255, 0))
+                                    else:
+                                        CreateObject(circles, "circle", 300, 300, 50, (0, 255, 0))
+                                    buffer = 50
+                                elif(buttons[i].Get_Text() == "Delete"):
+                                    if last_pinched_type == "rect":
+                                        DeleteObject(rectangles, last_pinched_index)
+                                        last_pinched_index = 0
+                                        last_pinched_type = ""
+                                    elif last_pinched_type == "circle":
+                                        DeleteObject(circles, last_pinched_index)
+                                        last_pinched_index = 0
+                                        last_pinched_type = ""
+                                #elif(buttons[i].Get_Text() == "Edit"):
+                                    
+                                break
+                    else:
+                        if h.type == "rect":
+                            rectangles[h.index].Move(finger_position, img_w, img_h)
+                        elif h.type == "circle":
+                            circles[h.index].Move(finger_position, img_w, img_h)
+                else:
+                    if h.editing == True:
+                        if h.type == "rect":
+                            rectangles[h.index].Set_Edit(False)
+                        elif h.type == "circle":
+                            circles[h.index].Set_Edit(False)
+                        h.ClearPos()
         clock.end_clock()
         hz = clock.result()
         draw(image, hz, rectangles, circles, buttons, last_pinched_type)

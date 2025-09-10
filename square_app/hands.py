@@ -5,6 +5,20 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 
+'''
+The Hand class takes care of all the hand functionality
+    Getters
+    Setters
+    Setup => Sets up the Hand by coping the handedness nad landmarks
+    isEmpty => If no hand of this type is found we take the handedness and landmarks to the old ones and keep the current empty
+    isActive => Checks if the Hand is active or not
+    checkPinch => We check if the hand is pinching by smoothing the distance and relative distance using medians and then having 
+                a 3state system(Lower = Pinch, Middle = Maintain, Top = Off)
+    GetPosition => Return the current position
+    AveragePos => We get the current pinching position by smoothing the x and y cordinates using medians
+    ClearPos => We clear the buffers for the AveragePos when the hand is not pinching to aviod miscalculations on the new position
+'''
+
 class Hand:
     def __init__(self):
         self.landmarks = None

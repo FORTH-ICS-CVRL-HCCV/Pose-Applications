@@ -5,6 +5,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 
+'''
+The Rectangle class takes care of the Rectangles on the screen
+    Getters
+    Setters
+    Move => Calculating the distance between the finger and the top left corner and then keeping it the same to move the rectangle
+    Draw => Drawing the rectangle on the screen
+    DetectCircleTouch => Detect if the finger touches the rectangle when Pinching
+'''
 
 class Rectangle:
     def __init__(self, x, y, size, color):

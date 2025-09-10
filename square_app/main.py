@@ -14,9 +14,10 @@ from hands import *
 
 def main():
     buffer = 0
-    clock = Clock()
-    cap = CameraSet()
+    clock = Clock() #Initializing Clock
+    cap = CameraSet() #Initianlizing Camera
 
+    #Initializing screen objects and their arrays
     rect = Rectangle(100, 300, 100, (0, 255, 0))
     circ = Circle(300, 300, 50, (0, 255, 0))
     but1 = Button(50, 50, (0, 255, 0), 100, "Add")
@@ -40,7 +41,7 @@ def main():
     
 
      
-
+    #Initializing the detector
     mp_drawing = mp.solutions.drawing_utils
     mp_hands = mp.solutions.hands
     mp_drawing_styles = mp.solutions.drawing_styles
@@ -59,6 +60,7 @@ def main():
 
 
         if results.multi_hand_landmarks:
+            #We initialize the hands and we copy the attributes from the detected hands to the left and right hands
             for landmark, handed in zip(results.multi_hand_landmarks, results.multi_handedness):
                 if(results.multi_hand_landmarks == None):
                     hands[0].isEmpty()
@@ -86,6 +88,7 @@ def main():
                 rel_distance = 0
                 finger_position = 0
 
+                #We initialize the distance and relative distance to use for pinching Detection
                 if(h.isActive()):
                     landmarks_normalized = np.array([[landmark.x, landmark.y] for landmark in hand.landmark])
                     index_finger_tip = landmarks_normalized[mp_hands.HandLandmark.INDEX_FINGER_TIP.value]
@@ -97,6 +100,7 @@ def main():
                 if h.checkPinch(distance, rel_distance):
                     finger_position = h.GetPosition(index_finger_tip)
                     if h.Get_Editing() == False:
+                        #If we are not editing something we search if we are touching something
                         for i in range(0, len(rectangles)):
                             if (rectangles[i].DetectRectTouch(finger_position, img_h, img_w)):
                                 #rectangles[i].Move(finger_position, img_w, img_h)
@@ -138,11 +142,13 @@ def main():
                                     
                                 break
                     else:
+                        #if we were editing something we continue moving it
                         if h.Get_Type() == "rect":
                             rectangles[h.Get_Index()].Move(finger_position, img_w, img_h)
                         elif h.Get_Type() == "circle":
                             circles[h.Get_Index()].Move(finger_position, img_w, img_h)
                 else:
+                    #If we are no longer pinching and we were editing something we reset
                     if h.Get_Editing() == True:
                         if h.Get_Type() == "rect":
                             rectangles[h.Get_Index()].Set_Edit(False)

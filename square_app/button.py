@@ -5,6 +5,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 
+
+'''
+The Button Class takes care of all the buttons on the screen
+    Getters
+    Setters
+    Draw => Drawing the Button on the screen
+    DetectButtonTouch => Detect if the finger is touching the button when pinching
+'''
+
 class Button:
     def __init__(self, x, y, color, size, text):
         self.x = x

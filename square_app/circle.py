@@ -5,6 +5,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 
+'''
+The Circle class takes care of the Circles on the screen
+    Getters
+    Setters
+    Move => Calculating the distance between the finger and the center and then keeping it the same to move the circle
+    Draw => Drawing the circle on the screen
+    DetectCircleTouch => Detect if the finger touches the circle when Pinching
+'''
 
 class Circle:
     def __init__(self, center_x, center_y, radius, color):

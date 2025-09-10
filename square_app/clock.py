@@ -5,6 +5,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 
+'''
+The Clock class is used to count the framerate
+    start_clock => records the start time
+    end_clock => records the end time
+    result => calculates framerate
+'''
+
 class Clock:
     def __init__(self):
         self.start = 0

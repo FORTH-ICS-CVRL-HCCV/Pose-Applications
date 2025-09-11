@@ -11,6 +11,7 @@ from circle import *
 from button import *
 from functions import *
 from hands import *
+from json_handling import *
 
 def main():
     buffer = 0
@@ -18,7 +19,7 @@ def main():
     cap = CameraSet() #Initianlizing Camera
 
     #Initializing screen objects and their arrays
-    rect = Rectangle(100, 300, 100, (0, 255, 0))
+    '''rect = Rectangle(100, 300, 100, (0, 255, 0))
     circ = Circle(300, 300, 50, (0, 255, 0))
     but1 = Button(50, 50, (0, 255, 0), 100, "Add")
     but2 = Button(200, 50, (255, 0, 0), 100, "Delete")
@@ -38,14 +39,21 @@ def main():
     buttons.append(but3)
     hands.append(left_hand)
     hands.append(right_hand)
-    
+    '''
+
+    rectangles = []
+    circles = []
+    buttons = []
+    hands = []
+
+    initObjects(rectangles, circles, buttons, hands)
 
      
     #Initializing the detector
     mp_drawing = mp.solutions.drawing_utils
     mp_hands = mp.solutions.hands
     mp_drawing_styles = mp.solutions.drawing_styles
-    hands_detector = mp_hands.Hands(static_image_mode=False, max_num_hands = 2, model_complexity=1, min_detection_confidence=0.5)
+    hands_detector = mp_hands.Hands(static_image_mode=False, max_num_hands = 2, model_complexity=0, min_detection_confidence=0.5)
 
     while cap.isOpened():
         clock.start_clock()
@@ -164,10 +172,12 @@ def main():
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break                
 
+        
+
         if (buffer > 0):
             buffer -= 1
     Finish(cap)                
-
+    SaveObjects(rectangles, circles)
 
 #Run
 

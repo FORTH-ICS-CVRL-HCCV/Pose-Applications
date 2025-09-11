@@ -9,7 +9,7 @@ from clock import *
 from square import *
 from circle import *
 from button import *
-from functions import *
+from hands import *
 
 #Initializing the Camera
 def CameraSet():

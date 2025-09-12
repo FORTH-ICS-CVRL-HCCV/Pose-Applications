@@ -13,16 +13,18 @@ from functions import *
 from hands import *
 import json
 
-
+#Save the data at the data.json file
 def save(data):
     with open(".venv\Pose-Applications\square_app\data.json", "w") as f:
         json.dump(data, f, indent=2)
 
+#read the data from the data.json file
 def read():
     with open(".venv\Pose-Applications\square_app\data.json", "r") as f:
         data = json.load(f)
     return data
 
+#Create the objects and initialize the arrays
 def initObjects(rectangles, circles, buttons, hands):
     data = read()
     for d in data:
@@ -45,6 +47,8 @@ def initObjects(rectangles, circles, buttons, hands):
     hands.append(left_hand)
     hands.append(right_hand)
 
+
+#Create the json string that will be saved
 def SaveObjects(rectangles, circles):
     data = []
     for r in rectangles:
@@ -55,7 +59,7 @@ def SaveObjects(rectangles, circles):
 
     save(data)
         
-
+#Create the json string about each object
 def add_object(data, type, x, y):
     data.append({"type": type, "x": x, "y": y})
 

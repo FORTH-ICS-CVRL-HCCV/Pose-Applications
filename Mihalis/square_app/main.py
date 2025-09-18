@@ -12,6 +12,7 @@ from button import *
 from functions import *
 from hands import *
 from json_handling import *
+from menu import *
 
 def main():
     buffer = 0
@@ -19,27 +20,7 @@ def main():
     cap = CameraSet() #Initianlizing Camera
 
     #Initializing screen objects and their arrays
-    '''rect = Rectangle(100, 300, 100, (0, 255, 0))
-    circ = Circle(300, 300, 50, (0, 255, 0))
-    but1 = Button(50, 50, (0, 255, 0), 100, "Add")
-    but2 = Button(200, 50, (255, 0, 0), 100, "Delete")
-    but3 = Button(350, 50, (0, 0, 250), 100, "Edit")
-    left_hand = Hand()
-    right_hand = Hand()
-
-    rectangles = []
-    circles = []
-    buttons = []
-    hands = []
-
-    rectangles.append(rect)
-    circles.append(circ)
-    buttons.append(but1)
-    buttons.append(but2)
-    buttons.append(but3)
-    hands.append(left_hand)
-    hands.append(right_hand)
-    '''
+    
 
     rectangles = []
     circles = []
@@ -47,6 +28,7 @@ def main():
     hands = []
 
     initObjects(rectangles, circles, buttons, hands)
+    menu = Menu(50, 200)
 
      
     #Initializing the detector
@@ -107,54 +89,62 @@ def main():
 
                 if h.checkPinch(distance, rel_distance):
                     finger_position = h.GetPosition(index_finger_tip)
-                    if h.Get_Editing() == False:
-                        #If we are not editing something we search if we are touching something
-                        for i in range(0, len(rectangles)):
-                            if (rectangles[i].DetectRectTouch(finger_position, img_h, img_w)):
-                                #rectangles[i].Move(finger_position, img_w, img_h)
-                                h.Set_Last_Pinched_Type(rectangles[i].Get_Type())
-                                h.Set_Last_Pinched_Index(i)
-                                h.Set_Type("rect")
-                                h.Set_Index(i)
-                                h.Set_Editing(True)
-                                    
-                                break
-                        for i in range(0, len(circles)):
-                            if (circles[i].DetectCircleTouch(finger_position, img_h, img_w)):
-                                #circles[i].Move(finger_position, img_w, img_h)
-                                h.Set_Last_Pinched_Type(circles[i].Get_Type())
-                                h.Set_Last_Pinched_Index(i)
-                                h.Set_Type("circle")
-                                h.Set_Index(i)
-                                h.Set_Editing(True)
-                                    
-                                break
-                        for i in range(0, len(buttons)):
-                            if (buttons[i].DetectButtonTouch(finger_position, img_h, img_w)):
-                                if(buttons[i].Get_Text() == "Add" and buffer == 0):
-                                    if(random.randint(0, 1) == 0):
-                                        CreateObject(rectangles, "rect", 300, 300, 100, (0, 255, 0))
-                                    else:
-                                        CreateObject(circles, "circle", 300, 300, 50, (0, 255, 0))
-                                    buffer = 50
-                                elif(buttons[i].Get_Text() == "Delete"):
-                                    if h.Get_Last_Pinched_Type() == "rect":
-                                        DeleteObject(rectangles, h.Get_Last_Pinched_Index())
-                                        h.Set_Last_Pinched_Type("")
-                                        h.Set_Last_Pinched_Index(0)
-                                    elif h.Get_Last_Pinched_Type() == "circle":
-                                        DeleteObject(circles, h.Get_Last_Pinched_Index())
-                                        h.Set_Last_Pinched_Type("")
-                                        h.Set_Last_Pinched_Index(0)
-                                #elif(buttons[i].Get_Text() == "Edit"):
-                                    
-                                break
+                    if menu.Get_Status() == False:
+                        if h.Get_Editing() == False:
+                            #If we are not editing something we search if we are touching something
+                            for i in range(0, len(rectangles)):
+                                if (rectangles[i].DetectRectTouch(finger_position, img_h, img_w)):
+                                    #rectangles[i].Move(finger_position, img_w, img_h)
+                                    h.Set_Last_Pinched_Type(rectangles[i].Get_Type())
+                                    h.Set_Last_Pinched_Index(i)
+                                    h.Set_Type("rect")
+                                    h.Set_Index(i)
+                                    h.Set_Editing(True)
+                                        
+                                    break
+                            for i in range(0, len(circles)):
+                                if (circles[i].DetectCircleTouch(finger_position, img_h, img_w)):
+                                    #circles[i].Move(finger_position, img_w, img_h)
+                                    h.Set_Last_Pinched_Type(circles[i].Get_Type())
+                                    h.Set_Last_Pinched_Index(i)
+                                    h.Set_Type("circle")
+                                    h.Set_Index(i)
+                                    h.Set_Editing(True)
+                                        
+                                    break
+                            for i in range(0, len(buttons)):
+                                if (buttons[i].DetectButtonTouch(finger_position, img_h, img_w)):
+                                    if(buttons[i].Get_Text() == "Add" and buffer == 0):
+                                        menu.Set_Status(True)
+                                        menu.Set_Edit("Add")
+                                        buffer = 50
+                                    elif(buttons[i].Get_Text() == "Delete"):
+                                        if h.Get_Last_Pinched_Type() == "rect":
+                                            DeleteObject(rectangles, h.Get_Last_Pinched_Index())
+                                            h.Set_Last_Pinched_Type("")
+                                            h.Set_Last_Pinched_Index(0)
+                                        elif h.Get_Last_Pinched_Type() == "circle":
+                                            DeleteObject(circles, h.Get_Last_Pinched_Index())
+                                            h.Set_Last_Pinched_Type("")
+                                            h.Set_Last_Pinched_Index(0)
+                                    elif(buttons[i].Get_Text() == "Edit"):
+                                        menu.Set_Status(True)
+                                        menu.Set_Edit("Edit")
+                                    break
+                        else:
+                            #if we were editing something we continue moving it
+                            if h.Get_Type() == "rect":
+                                rectangles[h.Get_Index()].Move(finger_position, img_w, img_h)
+                            elif h.Get_Type() == "circle":
+                                circles[h.Get_Index()].Move(finger_position, img_w, img_h)
                     else:
-                        #if we were editing something we continue moving it
-                        if h.Get_Type() == "rect":
-                            rectangles[h.Get_Index()].Move(finger_position, img_w, img_h)
-                        elif h.Get_Type() == "circle":
-                            circles[h.Get_Index()].Move(finger_position, img_w, img_h)
+                        if h.Get_Editing() == True:
+                            if h.Get_Type() == "rect":
+                                rectangles[h.Get_Index()].Set_Edit(False)
+                            elif h.Get_Type() == "circle":
+                                circles[h.Get_Index()].Set_Edit(False)
+                        menu.Touch(finger_position, img_w, img_h, rectangles, circles, h.Get_Last_Pinched_Index(), h.Get_Last_Pinched_Type())
+                        h.ClearPos()
                 else:
                     #If we are no longer pinching and we were editing something we reset
                     if h.Get_Editing() == True:
@@ -165,7 +155,7 @@ def main():
                         h.ClearPos()
         clock.end_clock()
         hz = clock.result()
-        draw(image, hz, rectangles, circles, buttons, hands[0].Get_Last_Pinched_Type(), hands[1].Get_Last_Pinched_Type())
+        draw(image, hz, rectangles, circles, buttons, menu, hands[0].Get_Last_Pinched_Type(), hands[1].Get_Last_Pinched_Type())
         cv2.imshow("Hands Detection", cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
 
         #Press 'q' to exit

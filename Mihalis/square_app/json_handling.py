@@ -33,10 +33,10 @@ def initObjects(rectangles, circles, buttons, hands):
     data = read()
     for d in data:
         if d["type"] == "rect":
-            rect = Rectangle(d["x"], d["y"], 100, (0, 255, 0))
+            rect = Rectangle(d["x"], d["y"], d["size"], d["color"])
             rectangles.append(rect)
         elif d["type"] == "circle":
-            circ = Circle(d["x"], d["y"], 50, (0, 255, 0))
+            circ = Circle(d["x"], d["y"], d["size"], d["color"])
             circles.append(circ)
 
     but1 = Button(50, 50, (0, 255, 0), 100, "Add")
@@ -56,14 +56,14 @@ def initObjects(rectangles, circles, buttons, hands):
 def SaveObjects(rectangles, circles):
     data = []
     for r in rectangles:
-        add_object(data, "rect", int(r.Get_X()), int(r.Get_Y()))
+        add_object(data, "rect", int(r.Get_X()), int(r.Get_Y(), r.Get_Size(), r.Get_Color()))
     
     for c in circles:
-        add_object(data, "circle", int(c.Get_Center_X()), int(c.Get_Center_Y()))
+        add_object(data, "circle", int(c.Get_Center_X()), int(c.Get_Center_Y()), c.Get_Radius(), c.Get_Color())
 
     save(data)
         
 #Create the json string about each object
-def add_object(data, type, x, y):
-    data.append({"type": type, "x": x, "y": y})
+def add_object(data, type, x, y, size, color):
+    data.append({"type": type, "x": x, "y": y, "size": size, "color": color})
 

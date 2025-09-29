@@ -128,6 +128,12 @@ def main():
                                             h.Set_Last_Pinched_Type("")
                                             h.Set_Last_Pinched_Index(0)
                                     elif(buttons[i].Get_Text() == "Edit"):
+                                        if h.Get_Last_Pinched_Type() == "rect":
+                                            obj = rectangles[h.Get_Last_Pinched_Index()]
+                                            menu.Start_Edit(obj.Get_Size(), obj.Get_Color(), "rect")
+                                        elif h.Get_Last_Pinched_Type() == "circle":
+                                            obj = circle[h.Get_Last_Pinched_Index()]
+                                            menu.Start_Edit(obj.Get_Size(), obj.Get_Color(), "circle")
                                         menu.Set_Status(True)
                                         menu.Set_Edit("Edit")
                                     break

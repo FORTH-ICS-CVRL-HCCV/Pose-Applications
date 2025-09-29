@@ -56,7 +56,7 @@ def initObjects(rectangles, circles, buttons, hands):
 def SaveObjects(rectangles, circles):
     data = []
     for r in rectangles:
-        add_object(data, "rect", int(r.Get_X()), int(r.Get_Y(), r.Get_Size(), r.Get_Color()))
+        add_object(data, "rect", int(r.Get_X()), int(r.Get_Y()), r.Get_Size(), r.Get_Color())
     
     for c in circles:
         add_object(data, "circle", int(c.Get_Center_X()), int(c.Get_Center_Y()), c.Get_Radius(), c.Get_Color())

@@ -15,16 +15,16 @@ import json
 
 #Save the data at the data.json file
 def save(data):
-    with open(".venv\Pose-Applications\Mihalis\square_app\data.json", "w") as f:
+    with open("Pose-Applications/Mihalis/square_app/data.json", "w") as f:
         json.dump(data, f, indent=2)
 
 #read the data from the data.json file
 def read():
     try:
-        with open(".venv\Pose-Applications\Mihalis\square_app\data.json", "r") as f:
+        with open("Pose-Applications/Mihalis/square_app/data.json", "r") as f:
             data = json.load(f)
     except:
-        with open(".venv\Pose-Applications\Mihalis\square_app\data.json", "w") as f:
+        with open("Pose-Applications/Mihalis/square_app/data.json", "w") as f:
             data = []
     return data
 

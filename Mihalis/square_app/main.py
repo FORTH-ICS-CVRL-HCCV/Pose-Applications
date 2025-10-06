@@ -133,7 +133,7 @@ def main():
                                             menu.Start_Edit(obj.Get_Size(), obj.Get_Color(), "rect")
                                         elif h.Get_Last_Pinched_Type() == "circle":
                                             obj = circles[h.Get_Last_Pinched_Index()]
-                                            menu.Start_Edit(obj.Get_Size(), obj.Get_Color(), "circle")
+                                            menu.Start_Edit(obj.Get_Radius(), obj.Get_Color(), "circle")
                                         menu.Set_Status(True)
                                         menu.Set_Edit("Edit")
                                     break
